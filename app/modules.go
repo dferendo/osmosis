@@ -3,6 +3,7 @@ package app
 import (
 	// Utilities from the Cosmos-SDK other than Cosmos modules
 	"github.com/cosmos/cosmos-sdk/types/module"
+	icatypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/types"
 
 	// Cosmos-SDK Modules
 	// https://github.com/cosmos/cosmos-sdk/tree/master/x
@@ -69,13 +70,13 @@ import (
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
 
 	// IBC Transfer: Defines the "transfer" IBC port
-	transfer "github.com/cosmos/ibc-go/v2/modules/apps/transfer"
-	ibctransfertypes "github.com/cosmos/ibc-go/v2/modules/apps/transfer/types"
+	transfer "github.com/cosmos/ibc-go/v3/modules/apps/transfer"
+	ibctransfertypes "github.com/cosmos/ibc-go/v3/modules/apps/transfer/types"
 
 	// IBC: Inter-blockchain communication
-	ibc "github.com/cosmos/ibc-go/v2/modules/core"
-	ibcclientclient "github.com/cosmos/ibc-go/v2/modules/core/02-client/client"
-	ibchost "github.com/cosmos/ibc-go/v2/modules/core/24-host"
+	ibc "github.com/cosmos/ibc-go/v3/modules/core"
+	ibcclientclient "github.com/cosmos/ibc-go/v3/modules/core/02-client/client"
+	ibchost "github.com/cosmos/ibc-go/v3/modules/core/24-host"
 
 	// Osmosis application prarmeters
 	appparams "github.com/osmosis-labs/osmosis/v7/app/params"
@@ -129,6 +130,9 @@ import (
 	"github.com/osmosis-labs/bech32-ibc/x/bech32ibc"
 	bech32ibctypes "github.com/osmosis-labs/bech32-ibc/x/bech32ibc/types"
 	"github.com/osmosis-labs/bech32-ibc/x/bech32ics20"
+
+	// ICA: Allows Interchain communication
+	ica "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts"
 )
 
 // appModuleBasics returns ModuleBasics for the module BasicManager.
@@ -167,6 +171,7 @@ var appModuleBasics = []module.AppModuleBasic{
 	superfluid.AppModuleBasic{},
 	bech32ibc.AppModuleBasic{},
 	wasm.AppModuleBasic{},
+	ica.AppModuleBasic{},
 }
 
 // module account permissions
@@ -187,6 +192,7 @@ var moduleAaccountPermissions = map[string][]string{
 	superfluidtypes.ModuleName:               {authtypes.Minter, authtypes.Burner},
 	txfeestypes.ModuleName:                   nil,
 	wasm.ModuleName:                          {authtypes.Burner},
+	icatypes.ModuleName:                      nil,
 }
 
 // appModules return modules to initlize module manager
@@ -225,6 +231,7 @@ func appModules(app *OsmosisApp, encodingConfig appparams.EncodingConfig, skipGe
 		superfluid.NewAppModule(appCodec, *app.SuperfluidKeeper, app.AccountKeeper, app.BankKeeper,
 			app.StakingKeeper, app.LockupKeeper, app.GAMMKeeper, app.EpochsKeeper),
 		bech32ibc.NewAppModule(appCodec, *app.Bech32IBCKeeper),
+		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 	}
 }
 
@@ -257,6 +264,7 @@ func orderBeginBlockers() []string {
 		superfluidtypes.ModuleName,
 		bech32ibctypes.ModuleName, txfeestypes.ModuleName,
 		wasm.ModuleName,
+		icatypes.ModuleName,
 	}
 }
 
@@ -274,6 +282,7 @@ var orderEndBlockers = []string{
 	// Note: epochs' endblock should be "real" end of epochs, we keep epochs endblock at the end
 	epochstypes.ModuleName,
 	wasm.ModuleName,
+	icatypes.ModuleName,
 }
 
 // modulesOrderInitGenesis returns module names in order for init genesis calls
@@ -306,6 +315,7 @@ var modulesOrderInitGenesis = []string{
 	authz.ModuleName,
 	// wasm after ibc transfer
 	wasm.ModuleName,
+	icatypes.ModuleName,
 }
 
 // simulationModules returns modules for simulation manager
