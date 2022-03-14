@@ -3,8 +3,6 @@ package app
 import (
 	"fmt"
 	ica "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts"
-	icacontrollertypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/controller/types"
-	icahosttypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/types"
 	"io"
 	"net/http"
 	"os"
@@ -127,8 +125,8 @@ import (
 	bech32ics20keeper "github.com/osmosis-labs/bech32-ibc/x/bech32ics20/keeper"
 
 	// ICA: Allows Interchain communication
-	icacontrollerkeeper "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/controller/keeper"
 	icahostkeeper "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/keeper"
+	icahosttypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/types"
 	icatypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/types"
 )
 
@@ -225,11 +223,10 @@ type OsmosisApp struct {
 	UpgradeKeeper    *upgradekeeper.Keeper
 
 	// make scoped keepers public for test purposes
-	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
-	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
-	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
-	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
-	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
+	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
+	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
+	ScopedWasmKeeper     capabilitykeeper.ScopedKeeper
+	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
 	// "Normal" keepers
 	AccountKeeper        *authkeeper.AccountKeeper
@@ -239,7 +236,6 @@ type OsmosisApp struct {
 	DistrKeeper          *distrkeeper.Keeper
 	SlashingKeeper       *slashingkeeper.Keeper
 	IBCKeeper            *ibckeeper.Keeper
-	ICAControllerKeeper  icacontrollerkeeper.Keeper
 	ICAHostKeeper        icahostkeeper.Keeper
 	TransferKeeper       *ibctransferkeeper.Keeper
 	Bech32IBCKeeper      *bech32ibckeeper.Keeper
@@ -297,7 +293,6 @@ func NewOsmosisApp(
 		gammtypes.StoreKey, lockuptypes.StoreKey, claimtypes.StoreKey, incentivestypes.StoreKey,
 		epochstypes.StoreKey, poolincentivestypes.StoreKey, authzkeeper.StoreKey, txfeestypes.StoreKey,
 		bech32ibctypes.StoreKey,
-		icacontrollertypes.StoreKey,
 		icahosttypes.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -363,7 +358,7 @@ func NewOsmosisApp(
 		poolincentives.NewAppModule(appCodec, *app.PoolIncentivesKeeper),
 		epochs.NewAppModule(appCodec, *app.EpochsKeeper),
 		bech32ibc.NewAppModule(appCodec, *app.Bech32IBCKeeper),
-		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
+		ica.NewAppModule(nil, &app.ICAHostKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
