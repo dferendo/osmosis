@@ -29,8 +29,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradekeeper "github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
-	icacontrollerkeeper "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/controller/keeper"
-	icacontrollertypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/controller/types"
 	icahost "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host"
 	icahostkeeper "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/keeper"
 	icahosttypes "github.com/cosmos/ibc-go/v3/modules/apps/27-interchain-accounts/host/types"
@@ -88,7 +86,6 @@ func (app *OsmosisApp) InitSpecialKeepers(
 	// add capability keeper and ScopeToModule for ibc module
 	app.CapabilityKeeper = capabilitykeeper.NewKeeper(appCodec, keys[capabilitytypes.StoreKey], memKeys[capabilitytypes.MemStoreKey])
 	app.ScopedIBCKeeper = app.CapabilityKeeper.ScopeToModule(ibchost.ModuleName)
-	app.ScopedICAControllerKeeper = app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
 	app.ScopedICAHostKeeper = app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
 	app.ScopedTransferKeeper = app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
 	app.CapabilityKeeper.Seal()
@@ -186,13 +183,6 @@ func (app *OsmosisApp) InitNormalKeepers() {
 	app.TransferKeeper = &transferKeeper
 	transferIBCModule := transfer.NewIBCModule(*app.TransferKeeper)
 
-	// ICA Keepers
-	app.ICAControllerKeeper = icacontrollerkeeper.NewKeeper(
-		appCodec, keys[icacontrollertypes.StoreKey], app.GetSubspace(icacontrollertypes.SubModuleName),
-		app.IBCKeeper.ChannelKeeper, // may be replaced with middleware such as ics29 fee
-		app.IBCKeeper.ChannelKeeper, &app.IBCKeeper.PortKeeper,
-		app.ScopedICAControllerKeeper, app.MsgServiceRouter(),
-	)
 	app.ICAHostKeeper = icahostkeeper.NewKeeper(
 		appCodec, keys[icahosttypes.StoreKey], app.GetSubspace(icahosttypes.SubModuleName),
 		app.IBCKeeper.ChannelKeeper, &app.IBCKeeper.PortKeeper,
@@ -323,13 +313,13 @@ func (app *OsmosisApp) SetupHooks() {
 
 	app.LockupKeeper.SetHooks(
 		lockuptypes.NewMultiLockupHooks(
-			// insert lockup hooks receivers here
+		// insert lockup hooks receivers here
 		),
 	)
 
 	app.IncentivesKeeper.SetHooks(
 		incentivestypes.NewMultiIncentiveHooks(
-			// insert incentive hooks receivers here
+		// insert incentive hooks receivers here
 		),
 	)
 
