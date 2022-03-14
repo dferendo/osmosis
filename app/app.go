@@ -43,6 +43,7 @@ import (
 	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
+	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
 	authzkeeper "github.com/cosmos/cosmos-sdk/x/authz/keeper"
 	authzmodule "github.com/cosmos/cosmos-sdk/x/authz/module"
 	"github.com/cosmos/cosmos-sdk/x/bank"
@@ -377,6 +378,22 @@ func NewOsmosisApp(
 		epochstypes.ModuleName,
 		minttypes.ModuleName, poolincentivestypes.ModuleName, distrtypes.ModuleName, slashingtypes.ModuleName,
 		evidencetypes.ModuleName, stakingtypes.ModuleName, ibchost.ModuleName, capabilitytypes.ModuleName,
+		authz.ModuleName,
+		paramstypes.ModuleName,
+		genutiltypes.ModuleName,
+		banktypes.ModuleName,
+		txfeestypes.ModuleName,
+		incentivestypes.ModuleName,
+		claimtypes.ModuleName,
+		icatypes.ModuleName,
+		authtypes.ModuleName,
+		lockuptypes.ModuleName,
+		gammtypes.ModuleName,
+		govtypes.ModuleName,
+		ibctransfertypes.ModuleName,
+		bech32ibctypes.ModuleName,
+		vestingtypes.ModuleName,
+		crisistypes.ModuleName,
 	)
 	app.mm.SetOrderEndBlockers(
 		lockuptypes.ModuleName,
@@ -384,6 +401,30 @@ func NewOsmosisApp(
 		authz.ModuleName,
 		// Note: epochs' endblock should be "real" end of epochs, we keep epochs endblock at the end
 		epochstypes.ModuleName,
+		authz.ModuleName,
+		paramstypes.ModuleName,
+		genutiltypes.ModuleName,
+		banktypes.ModuleName,
+		txfeestypes.ModuleName,
+		incentivestypes.ModuleName,
+		claimtypes.ModuleName,
+		icatypes.ModuleName,
+		authtypes.ModuleName,
+		lockuptypes.ModuleName,
+		gammtypes.ModuleName,
+		govtypes.ModuleName,
+		ibctransfertypes.ModuleName,
+		bech32ibctypes.ModuleName,
+		vestingtypes.ModuleName,
+		crisistypes.ModuleName,
+		upgradetypes.ModuleName,
+		poolincentivestypes.ModuleName,
+		capabilitytypes.ModuleName,
+		slashingtypes.ModuleName,
+		distrtypes.ModuleName,
+		evidencetypes.ModuleName,
+		minttypes.ModuleName,
+		ibchost.ModuleName,
 	)
 
 	// NOTE: The genutils moodule must occur after staking so that pools are
@@ -392,12 +433,17 @@ func NewOsmosisApp(
 	// so that other modules that want to create or claim capabilities afterwards in InitChain
 	// can do so safely.
 	app.mm.SetOrderInitGenesis(
+		upgradetypes.ModuleName,
+		vestingtypes.ModuleName,
+		paramstypes.ModuleName,
 		capabilitytypes.ModuleName, authtypes.ModuleName, banktypes.ModuleName, distrtypes.ModuleName, stakingtypes.ModuleName,
 		slashingtypes.ModuleName, govtypes.ModuleName, minttypes.ModuleName, crisistypes.ModuleName,
 		ibchost.ModuleName,
 		gammtypes.ModuleName,
 		txfeestypes.ModuleName,
-		genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
+		genutiltypes.ModuleName, evidencetypes.ModuleName,
+		ibctransfertypes.ModuleName,
+		icatypes.ModuleName,
 		bech32ibctypes.ModuleName, // comes after ibctransfertypes
 		poolincentivestypes.ModuleName,
 		claimtypes.ModuleName,
@@ -405,7 +451,6 @@ func NewOsmosisApp(
 		epochstypes.ModuleName,
 		lockuptypes.ModuleName,
 		authz.ModuleName,
-		icatypes.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(app.CrisisKeeper)
@@ -722,6 +767,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
+	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(incentivestypes.ModuleName)
 	paramsKeeper.Subspace(poolincentivestypes.ModuleName)
 	paramsKeeper.Subspace(gammtypes.ModuleName)
