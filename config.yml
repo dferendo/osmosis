@@ -1,9 +1,27 @@
 version: 1
 accounts:
   - name: alice
-    coins: ["1000token", "100000000stake"]
+    coins: ["10000ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9", 
+            "10000uband", "20000ukava", "30000uluna", "200000000stake", "3000000000uosmo"]
   - name: bob
     coins: ["500token"]
+  - name: relayer
+    coins: [ "100000000000stake" ]
+    mnemonic: record gift you once hip style during joke field prize dust unique length more pencil transfer quit train device arrive energy sort steak upset
 validator:
   name: alice
   staked: "100000000stake"
+init:
+  home: "./data/osmo-1"
+  app:
+    minimum-gas-prices: "0.001stake"
+host:
+    rpc: "0.0.0.0:26657"
+    p2p: "0.0.0.0:26656"
+    prof: "0.0.0.0:6063"
+    grpc: "0.0.0.0:9090"
+    grpc-web: "0.0.0.0:9091"
+    api: "0.0.0.0:1317"
+    rosetta: "0.0.0.0:8081"
+genesis:
+  chain_id: "osmo-1"
