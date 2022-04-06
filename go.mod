@@ -120,11 +120,7 @@ require (
 require (
 	github.com/cosmos/btcutil v1.0.4 // indirect
 	github.com/dgraph-io/badger/v2 v2.2007.3 // indirect
-	github.com/ghodss/yaml v1.0.0 // indirect
-	github.com/golang/glog v1.0.0 // indirect
 	github.com/google/go-cmp v0.5.7 // indirect
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0 // indirect
-	sigs.k8s.io/yaml v1.3.0 // indirect
 )
 
 replace (

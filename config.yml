@@ -25,3 +25,10 @@ host:
     rosetta: "0.0.0.0:8081"
 genesis:
   chain_id: "osmo-1"
+  interchainaccounts:
+    host_genesis_state:
+      params:
+        allow_messages:
+          - "/cosmos.bank.v1beta1.MsgSend"
+          - "/ibc.applications.transfer.v1.MsgTransfer"
+          - "/osmosis.gamm.v1beta1.MsgSwapExactAmountIn"
