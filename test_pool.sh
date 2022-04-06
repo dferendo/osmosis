@@ -5,7 +5,7 @@ NODE_DATA="./data/$CHAIN_ID/"
 # Run the commands one-by-one in a bash
 starport chain serve --config=config.yml --reset-once
 
-osmosisd query bank balances osmo1qdpphtpwtnmy3qtaq2qataf0ckffmqq08hk6u3 --node="$NODE" --chain-id="$CHAIN_ID" --home="$NODE_DATA"
+osmosisd query bank balances osmo16xlwut5jjrmxape27lys2ga3jxxqhcs7qwtsea --node="$NODE" --chain-id="$CHAIN_ID" --home="$NODE_DATA"
 
 # Create pools
 osmosisd tx gamm create-pool --pool-file="./pools/pool_uband.json" --fees="350stake" --from=alice --node="$NODE" --chain-id="$CHAIN_ID" --home="$NODE_DATA"
