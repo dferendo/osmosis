@@ -1,8 +1,8 @@
 version: 1
 accounts:
   - name: alice
-    coins: ["10000ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9", 
-            "10000uband", "20000ukava", "30000uluna", "200000000stake", "3000000000uosmo"]
+    coins: ["1000000ibc/C4CFF46FD6DE35CA4CF4CE031E643C8FDC9BA4B99AE598E9B0ED98FE3A2319F9",
+            "1000000uband", "2000000ukava", "3000000uluna", "200000000stake", "3000000000uosmo"]
     mnemonic: false tone sleep please shrug flag dolphin patch shuffle gentle vault laptop eyebrow extend neutral road ostrich dragon carry fabric major stove judge borrow
   - name: bob
     coins: ["500token"]
@@ -26,10 +26,11 @@ host:
     rosetta: "0.0.0.0:8081"
 genesis:
   chain_id: "osmo-1"
-  interchainaccounts:
-    host_genesis_state:
-      params:
-        allow_messages:
-          - "/cosmos.bank.v1beta1.MsgSend"
-          - "/ibc.applications.transfer.v1.MsgTransfer"
-          - "/osmosis.gamm.v1beta1.MsgSwapExactAmountIn"
+  app_state:
+    interchainaccounts:
+      host_genesis_state:
+        params:
+          allow_messages:
+            - "/cosmos.bank.v1beta1.MsgSend"
+            - "/ibc.applications.transfer.v1.MsgTransfer"
+            - "/osmosis.gamm.v1beta1.MsgSwapExactAmountIn"
